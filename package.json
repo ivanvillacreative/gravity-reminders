@@ -1,0 +1,21 @@
+{
+  "name": "reminders",
+  "version": "0.0.1",
+  "description": "A lamba function to automatcily trigger email reminders by sorting through a list of entries on gravvity forms.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Lambda",
+    "aws",
+    "email",
+    "reminders",
+    "wordpress",
+    "gravity",
+    "forms",
+    "javascript"
+  ],
+  "author": "Ivan Villa",
+  "license": "MIT"
+}
