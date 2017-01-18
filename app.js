@@ -6,12 +6,26 @@ const SparkPost = require('sparkpost');
 
 let sparkpostClient = new SparkPost(CONFIG.sparkpostKey);
 
+/** Helper Functions **/
+
 // calculate the signature needed for authentication
 function calculateSig(stringToSign, privateKey){
   let hash = CryptoJS.HmacSHA1(stringToSign, privateKey);
   let base64 = hash.toString(CryptoJS.enc.Base64);
   return encodeURIComponent(base64);
 }
+
+// builds date
+function addDays(days) {
+  let date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
+// formats date for url search
+function formatDate(date) { return ('00' + (date.getMonth() + 1)).slice(-2) + '-' + ('00' + date.getDate()).slice(-2) + '-' + date.getFullYear()}
+
+/** App Functions **/
 
 // send emails via sparkpost
 function sendEmail(message) {
