@@ -6,6 +6,20 @@ const SparkPost = require('sparkpost');
 
 let sparkpostClient = new SparkPost(CONFIG.sparkpostKey);
 
+// exports.handler = (event, context, callback) => {
+//set variables
+let d = new Date();
+let expiration = 3600; // 1 hour,
+let unixtime = parseInt(d.getTime() / 1000);
+let future_unixtime = unixtime + expiration;
+let publicKey = CONFIG.publicKey;
+let privateKey = CONFIG.privateKey;
+let method = "GET";
+let route = "entries";
+let page_size = 10;
+let emailMessage;
+let reminderSubject;
+
 /** Helper Functions **/
 
 // calculate the signature needed for authentication
@@ -50,19 +64,7 @@ function sendEmail(data) {
   });
 }
 
-// exports.handler = (event, context, callback) => {
-//set variables
-let d = new Date();
-let expiration = 3600; // 1 hour,
-let unixtime = parseInt(d.getTime() / 1000);
-let future_unixtime = unixtime + expiration;
-let publicKey = CONFIG.publicKey;
-let privateKey = CONFIG.privateKey;
-let method = "GET";
-let route = "entries";
-let page_size = 10;
-let emailMessage;
-let reminderSubject;
+
 
 // Gravity forms Search Criteria
 let search = {
@@ -144,6 +146,7 @@ function setReminderSettings(data) {
 function setupEmails(data) {
   // console.log(JSON.stringify(data));
   data.response.entries.forEach((d) => {
-    console.log(d["5"]);
+    //console.log(d["5"]);
+    sendEmail(d);
   });
 }
