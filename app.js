@@ -1,3 +1,4 @@
+'use strict';
 const CryptoJS = require("crypto-js");
 const CONFIG = require('./config');
 const http =  require('http');
