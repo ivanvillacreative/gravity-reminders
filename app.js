@@ -1,6 +1,7 @@
 const CryptoJS = require("crypto-js");
 const CONFIG = require('./config');
 const http =  require('http');
+const template = require('./template');
 const SparkPost = require('sparkpost');
 
 let sparkpostClient = new SparkPost(CONFIG.sparkpostKey);
@@ -17,17 +18,16 @@ function sendEmail(message) {
   sparkpostClient.transmissions.send({
     content: {
       from: CONFIG.fromEmail,
-      subject: 'Hello, World!',
-      html:'<html><body><p>Testing SparkPost - the world\'s most awesomest email service!</p><p>' + message + '</p></body></html>'
+      subject: 'Ällo',
+      html: template.createTemplate('The thing', 'Feb. 2, 2017', 'Hello!')
     },
     recipients: [
 
     ]
   })
   .then(data => {
-    console.log('Woohoo! You just sent your first mailing!');
+    console.log('Woohoo! sent mail!');
     // callback(null, 'sent email!');
-    console.log(data);
   })
   .catch(err => {
     console.log('Whoops! Something went wrong');
