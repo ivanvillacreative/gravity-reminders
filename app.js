@@ -28,15 +28,15 @@ function formatDate(date) { return ('00' + (date.getMonth() + 1)).slice(-2) + '-
 /** App Functions **/
 
 // send emails via sparkpost
-function sendEmail(message) {
+function sendEmail(data) {
   sparkpostClient.transmissions.send({
     content: {
       from: CONFIG.fromEmail,
-      subject: 'Ällo',
-      html: template.createTemplate('The thing', 'Feb. 2, 2017', 'Hello!')
+      subject: reminderSubject,
+      html: template.createTemplate(data['4'], data['5'], emailMessage)
     },
     recipients: [
-
+      {address: data['2']}
     ]
   })
   .then(data => {
@@ -62,6 +62,7 @@ let method = "GET";
 let route = "entries";
 let page_size = 10;
 let emailMessage;
+let reminderSubject;
 
 // Gravity forms Search Criteria
 let search = {
@@ -128,6 +129,7 @@ getData('http://tuleyome.org/wp-json/acf/v2/options', setReminderSettings);
 //change me
 function setReminderSettings(data) {
   emailMessage = data.acf.email_message;
+  reminderSubject = data.acf.reminder_subject;
   search.field_filters[0].value = formatDate(addDays(Number(data.acf.days_before)));
 
   //convert to a JSON string and url encode it so the JSON formatting persists
