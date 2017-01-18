@@ -125,8 +125,8 @@ function getData(url,callback){
 // call the Remider Email Settings
 getData('http://tuleyome.org/wp-json/acf/v2/options', setReminderSettings);
 
-
-function setReminderSettings(data){
+//change me
+function setReminderSettings(data) {
   emailMessage = data.acf.email_message;
   search.field_filters[0].value = formatDate(addDays(Number(data.acf.days_before)));
 
@@ -135,5 +135,13 @@ function setReminderSettings(data){
   url += '&search=' + searchString;
 
   // call the Remider Email Settings
-  getData(url, console.log);
+  getData(url, setupEmails);
+}
+
+
+function setupEmails(data) {
+  // console.log(JSON.stringify(data));
+  data.response.entries.forEach((d) => {
+    console.log(d["5"]);
+  });
 }
