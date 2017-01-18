@@ -61,25 +61,24 @@ let privateKey = CONFIG.privateKey;
 let method = "GET";
 let route = "entries";
 let page_size = 10;
-let reminder_date = "01-26-2017"
+let emailMessage;
 
 // Gravity forms Search Criteria
 let search = {
     field_filters: [{
         key: '5',
         operator: 'is',
-        value: reminder_date
+        value: ""
     }]
 };
 
-//convert to a JSON string and url encode it so the JSON formatting persists
-search = encodeURI(JSON.stringify(search));
+
 
 // Build URL String
 let stringToSign = publicKey + ":" + method + ":" + route + ":" + future_unixtime;
 let sig = calculateSig(stringToSign, privateKey);
 let url = CONFIG.site + '/gravityformsapi/' + route + '/?api_key=' + publicKey + '&signature=' + sig + '&expires=' + future_unixtime;
-url += '&paging[page_size]=' + page_size + '&search=' + search;
+url += '&paging[page_size]=' + page_size;
 
 
 // Get Data
@@ -122,17 +121,19 @@ function getData(url,callback){
 }
 
 
-let settings = {}
 
 // call the Remider Email Settings
 getData('http://tuleyome.org/wp-json/acf/v2/options', setReminderSettings);
 
-// call the Remider Email Settings
-getData(url, console.log);
 
-
-// Set the Reminder Settings
 function setReminderSettings(data){
-  settings.email_message = data.acf.email_message
-  settings.days_before = data.acf.days_before
+  emailMessage = data.acf.email_message;
+  search.field_filters[0].value = formatDate(addDays(Number(data.acf.days_before)));
+
+  //convert to a JSON string and url encode it so the JSON formatting persists
+  const searchString = encodeURI(JSON.stringify(search));
+  url += '&search=' + searchString;
+
+  // call the Remider Email Settings
+  getData(url, console.log);
 }
