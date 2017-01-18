@@ -47,13 +47,25 @@ let privateKey = CONFIG.privateKey;
 let method = "GET";
 let route = "entries";
 let page_size = 10;
+let reminder_date = "01-26-2017"
 
+// Gravity forms Search Criteria
+let search = {
+    field_filters: [{
+        key: '5',
+        operator: 'is',
+        value: reminder_date
+    }]
+};
+
+//convert to a JSON string and url encode it so the JSON formatting persists
+search = encodeURI(JSON.stringify(search));
 
 // Build URL String
 let stringToSign = publicKey + ":" + method + ":" + route + ":" + future_unixtime;
 let sig = calculateSig(stringToSign, privateKey);
 let url = CONFIG.site + '/gravityformsapi/' + route + '/?api_key=' + publicKey + '&signature=' + sig + '&expires=' + future_unixtime;
-url += '&paging[page_size]=' + page_size;
+url += '&paging[page_size]=' + page_size + '&search=' + search;
 
 
 // Get Data
@@ -95,5 +107,18 @@ function getData(url,callback){
   });
 }
 
-// Get the Remider Email Settings
-getData(url, console.log)
+
+let settings = {}
+
+// call the Remider Email Settings
+getData('http://tuleyome.org/wp-json/acf/v2/options', setReminderSettings);
+
+// call the Remider Email Settings
+getData(url, console.log);
+
+
+// Set the Reminder Settings
+function setReminderSettings(data){
+  settings.email_message = data.acf.email_message
+  settings.days_before = data.acf.days_before
+}
