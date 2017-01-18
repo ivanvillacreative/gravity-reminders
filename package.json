@@ -4,7 +4,8 @@
   "description": "A lamba function to automatcily trigger email reminders by sorting through a list of entries on gravvity forms.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
   },
   "keywords": [
     "Lambda",
