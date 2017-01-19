@@ -8,15 +8,17 @@ const SparkPost = require('sparkpost');
 let sparkpostClient = new SparkPost(CONFIG.sparkpostKey);
 
 //set variables
+const page_size = 10;
+const timezoneOffset = -8; // US Pacific Time
+const expiration = 3600; // 1 hour,
+
 let d = new Date();
-let expiration = 3600; // 1 hour,
 let unixtime = parseInt(d.getTime() / 1000);
 let future_unixtime = unixtime + expiration;
 let publicKey = CONFIG.publicKey;
 let privateKey = CONFIG.privateKey;
 let method = "GET";
 let route = "entries";
-let page_size = 10;
 let emailMessage;
 let reminderSubject;
 
@@ -35,11 +37,14 @@ function calculateSig(stringToSign, privateKey) {
   return encodeURIComponent(base64);
 }
 
-// Adds days to current date and returns updated date
-function addDays(days) {
+// Adds days to current date of a specific timezone and returns updated date
+function addDays(days, timezone) {
+  const tz = timezone || 0;
   let date = new Date();
-  date.setDate(date.getDate() + days);
-  return date;
+  let utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+  const nDate = new Date(utc + (3600000 * tz));
+  nDate.setDate(nDate.getDate() + days);
+  return nDate;
 }
 
 // formats date for url search => MM-DD-YYYY
@@ -133,7 +138,7 @@ getData('http://tuleyome.org/wp-json/acf/v2/options', setReminderSettings);
 function setReminderSettings(data) {
   emailMessage = data.acf.email_message;
   reminderSubject = data.acf.reminder_subject;
-  const searchDate = formatDate(addDays(Number(data.acf.days_before)));
+  const searchDate = formatDate(addDays(Number(data.acf.days_before), timezoneOffset));
   // convert to a JSON string and url encode it so the JSON formatting persists
   url += formatSearchCriteria(searchDate);
 
